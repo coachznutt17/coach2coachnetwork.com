@@ -51,12 +51,19 @@
             z-index: 10;
         }
 
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
         .brand-name {
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
             color: #10b981;
-            margin-top: 2rem;
         }
 
         .tagline {
@@ -246,7 +253,7 @@
     </div>
 
     <div class="container">
-        <!-- Logo will be added later -->
+        <img src="Logo Friday 5 16 ChatGPT Image May 16, 2025, 12_11_31 PM.png" alt="Coach2Coach Network Logo" class="logo">
         
         <h1 class="brand-name">Coach2Coach</h1>
         <p class="tagline">Made for Coaches, by Coaches</p>
@@ -311,10 +318,42 @@
             
             const email = document.getElementById('emailInput').value;
             const successMessage = document.getElementById('successMessage');
+            const submitButton = document.querySelector('.notify-btn');
             
-            successMessage.style.display = 'block';
-            document.getElementById('emailInput').value = '';
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
             
+            // Using Formspree for email collection
+            fetch('https://formspree.io/f/YOUR_FORM_ID', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    message: 'Coach2Coach waitlist signup'
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('emailInput').value = '';
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Sorry, there was an error. Please try again or contact us directly.');
+            })
+            .finally(() => {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Notify Me When We Launch';
+            });
+            
+            // Hide success message after 5 seconds
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 5000);
